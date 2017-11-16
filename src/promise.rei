@@ -31,7 +31,8 @@ let finally: ('x => unit, 'a => unit, t('x, 'a)) => unit;
 let fold: ('x => 'b, 'a => 'b, t('x, 'a)) => t('x, 'b);
 
 let fromOption: ('x, option('a)) => t('x, 'a);
-let fromResult: (Result.t('x, 'a)) => t('x, 'a);
+
+let fromResult: Result.t('a, 'x) => t('x, 'a);
 
 let fromJs: Js.Promise.t('a) => t('x, 'a);
 
