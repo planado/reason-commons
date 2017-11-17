@@ -4,7 +4,13 @@
   "version": "0.1.0",
   "bsc-flags": ["-bs-super-errors"],
   "sources": [
-    "src"
+    {
+      "dir": "src"
+    },
+    {
+      "dir": "__tests__",
+      "type": "dev"
+    }
   ],
   "package-specs":
     {
@@ -12,5 +18,6 @@
     }
   ,
   "bs-dependencies" : [
+    "bs-jest"
   ]
 }
