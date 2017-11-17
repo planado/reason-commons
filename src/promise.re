@@ -10,11 +10,9 @@ type t('err, 'a);
 
 [@bs.send] external _then : (t('x, 'a), 'a => 'b, 'x => t('y, 'b)) => t('y, 'b) = "then";
 
-[@bs.send] external _finally : (t('x, 'a), 'a => unit, 'x => unit) => t(unit, unit) = "then";
+[@bs.send] external _finally : (t('x, 'a), 'a => unit, 'x => unit) => unit = "then";
 
 [@bs.send] external _catch : (t('x, 'a), 'x => t('y, 'b)) => t('x, 'a) = "catch";
-
-[@bs.send] external _end : (t(unit, unit), unit => unit) => unit = "catch";
 
 [@bs.val] [@bs.scope "Promise"] external resolve : 'a => t('x, 'a) = "resolve";
 
@@ -28,15 +26,15 @@ let map = (f, p) => _map(p, f);
 
 let bind = (f, p) => _bind(p, f);
 
-let (>>=) = bind;
+let (>>=) = _bind;
 
-let catch = (f, p) => _catch(p, (x) => reject(f(x)));
+let catch = (f, p) => _catch(p, (x) => resolve(f(x)));
 
 let biMap = (fail, success, p) => _then(p, success, (err) => reject(fail(err)));
 
 let mapError = (f, p) => _then(p, (x) => x, (err) => reject(f(err)));
 
-let finally = (f, g, p) => _finally(p, g, f) |> ((p) => _end(p, () => ()));
+let finally = (f, g, p) => _finally(p, g, f) |> ignore;
 
 let fold = (f, g, p) => _fold(p, g, f);
 
