@@ -11,8 +11,8 @@ testAsync(
   (done_) =>
     Promise.resolve(5)
     |> Promise.finally(
-         (_) => fail("Should not go reject path") |> ignore,
-         (x) => done_(expect(x) |> toBe(5))
+         (x) => done_(expect(x) |> toBe(5)),
+         (_) => fail("Should not go reject path") |> ignore
        )
 );
 
@@ -21,7 +21,7 @@ testAsync(
   (done_) =>
     Promise.resolve(5)
     |> Promise.map((x) => x + 4)
-    |> Promise.finally(ignore, (x) => done_(expect(x) |> toBe(9)))
+    |> Promise.finally((x) => done_(expect(x) |> toBe(9)), ignore)
 );
 
 testAsync(
@@ -35,22 +35,35 @@ testAsync(
     |> ignore
 );
 
-/* describe( */
-/*   "awaiting all promises", */
-/*   () => { */
-/*     open Promise; */
-/*     let p1 = resolve(1); */
-/*     let p2 = resolve(2); */
-/*     beforeEach(() => p1 := make((res, _) => Js.Global.setTimeout(10, () => res(3)))); */
-/*     testAsync( */
-/*       "await all passed promises", */
-/*       (done_) => */
-/*         Promise.( */
-/*           resolve(5) */
-/*           >>= ((x) => resolve({j|$x test|j})) */
-/*           |> map((x) => done_(expect(x) |> toBe("5 test"))) */
-/*         ) */
-/*         |> ignore */
-/*     ) */
-/*   } */
-/* ); */
+describe(
+  "awaiting all promises",
+  () => {
+    open Promise;
+    let p1 = ref(resolve(1));
+    let p2 = ref(resolve(2));
+    beforeEach(
+      () => {
+        p1 := make((res, _) => Js.Global.setTimeout(() => res(3), 50) |> ignore);
+        p2 := make((res, _) => Js.Global.setTimeout(() => res(4), 100) |> ignore)
+      }
+    );
+    testAsync(
+      "await all passed promises",
+      (done_) => {
+        let a = Array.of_list([p1^, p2^]);
+        Promise.all(a)
+        |> Promise.finally((x) => done_(expect(x) |> toEqual([|3, 4|])), (e) => Js.log(e))
+        |> ignore
+      }
+    );
+    testAsync(
+      "first promise should win the race!",
+      (done_) => {
+        let a = Array.of_list([p1^, p2^]);
+        Promise.race(a)
+        |> Promise.finally((x) => done_(expect(x) |> toBe(3)), (e) => Js.log(e))
+        |> ignore
+      }
+    )
+  }
+);
