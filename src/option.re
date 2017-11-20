@@ -1,16 +1,18 @@
 type t('a) = option('a);
 
-let some = (x) => Some(x);
+let some = (x: 'a) : t('a) => Some(x);
 
-let may = (f) =>
-  fun
+let may = (f: 'a => unit, v: t('a)) : unit =>
+  switch v {
   | None => ()
-  | Some(x) => f(x);
+  | Some(x) => f(x)
+  };
 
-let map = (f) =>
-  fun
+let map = (f: 'a => 'b, v: t('a)) : t('b) =>
+  switch v {
   | None => None
-  | Some(x) => Some(f(x));
+  | Some(x) => Some(f(x))
+  };
 
 let bind = (m, f) =>
   switch m {
@@ -20,56 +22,63 @@ let bind = (m, f) =>
 
 let (>>=) = bind;
 
-let apply =
-  fun
+let apply = (v: t(('a => 'a))) : ('a => 'a) =>
+  switch v {
   | None => ((x) => x)
-  | Some(f) => f;
+  | Some(f) => f
+  };
 
-let filter = (f) =>
-  fun
+let filter = (f: 'a => bool, v: t('a)) : t('a) =>
+  switch v {
   | Some(x) when f(x) => Some(x)
-  | _ => None;
+  | _ => None
+  };
 
-let default = (d) =>
-  fun
+let default = (d: 'a, v: t('a)) : 'a =>
+  switch v {
   | None => d
-  | Some(v) => v;
+  | Some(v) => v
+  };
 
-let default_delayed = (l) =>
-  fun
+let defaultDelayed = (l: unit => 'a, v: t('a)) : 'a =>
+  switch v {
   | None => l()
-  | Some(x) => x;
+  | Some(x) => x
+  };
 
-let map_default = (f, d) =>
-  fun
+let mapDefault = (f: 'a => 'b, d: 'b, v: t('a)) : 'b =>
+  switch v {
   | None => d
-  | Some(x) => f(x);
+  | Some(x) => f(x)
+  };
 
-let map_default_delayed = (f, l, v) =>
+let mapDefaultDelayed = (f: 'a => 'b, l: unit => 'b, v: t('a)) =>
   switch v {
   | None => l()
   | Some(v) => f(v)
   };
 
-let is_none =
-  fun
+let isNone = (v: t('a)) : bool =>
+  switch v {
   | None => true
-  | _ => false;
+  | _ => false
+  };
 
-let is_some =
-  fun
+let isSome = (v: t('a)) : bool =>
+  switch v {
   | None => false
-  | _ => true;
+  | _ => true
+  };
 
-let get_exn = (s, e) =>
+let getExn = (s: t('a), e: exn) : 'a =>
   switch s {
   | None => raise(e)
   | Some(x) => x
   };
 
-let get = (s) => get_exn(s, Invalid_argument("Option.get"));
+let get = (s: t('a)) : 'a => getExn(s, Invalid_argument("Option.get"));
 
-let both = (v1, v2) =>
+let both = (v1: t('a), v2: t('b)) : t('c) =>
   switch (v1, v2) {
   | (_, None)
   | (None, _) => None
