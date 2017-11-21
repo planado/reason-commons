@@ -24,11 +24,18 @@ type t('a, 'err);
 
 [@bs.send] external _fromjs : (Js.Promise.t('a), 'a => 'a) => t('a, 'x) = "then";
 
-let map = (f: 'a => 'b, p: t('a, 'x)) : t('b, 'x) => _map(p, f);
+module Functor = {
+  let map = (f: 'a => 'b, p: t('a, 'x)) : t('b, 'x) => _map(p, f);
+};
 
-let bind = (p: t('a, 'x), f: 'a => t('b, 'x)) : t('b, 'x) => _bind(p, f);
+include Functor;
 
-let (>>=) = _bind;
+module Monad = {
+  let bind = (p: t('a, 'x), f: 'a => t('b, 'x)) : t('b, 'x) => _bind(p, f);
+  let (>>=) = _bind;
+};
+
+include Monad;
 
 let bimap = (success: 'a => 'b, fail: 'x => 'y, p: t('a, 'x)) : t('b, 'y) =>
   _then(p, success, (err) => reject(fail(err)));

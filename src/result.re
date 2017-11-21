@@ -29,11 +29,26 @@ let default = (d: 'a, v: t('a, 'b)) : 'a =>
   | Error(_) => d
   };
 
-let map = (f: 'a => 'b, v: t('a, 'c)) : t('b, 'c) =>
-  switch v {
-  | Error(e) => Error(e)
-  | Ok(x) => Ok(f(x))
-  };
+module Functor = {
+  let map = (f: 'a => 'b, v: t('a, 'c)) : t('b, 'c) =>
+    switch v {
+    | Error(e) => Error(e)
+    | Ok(x) => Ok(f(x))
+    };
+};
+
+include Functor;
+
+module Monad = {
+  let bind = (v: t('a, 'c), f: 'a => t('b, 'c)) : t('b, 'c) =>
+    switch v {
+    | Ok(x) => f(x)
+    | Error(_) as e => e
+    };
+  let (>>=) = bind;
+};
+
+include Monad;
 
 let bimap = (f: 'a1 => 'a2, g: 'b1 => 'b2, v: t('a, 'b)) : t('a2, 'b2) =>
   switch v {
@@ -76,11 +91,3 @@ let toOption = (v: t('a, 'b)) : option('a) =>
   | Ok(x) => Some(x)
   | Error(_) => None
   };
-
-let bind = (v: t('a, 'c), f: 'a => t('b, 'c)) : t('b, 'c) =>
-  switch v {
-  | Ok(x) => f(x)
-  | Error(_) as e => e
-  };
-
-let (>>=) = bind;

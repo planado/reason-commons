@@ -8,25 +8,38 @@ let may = (f: 'a => unit, v: t('a)) : unit =>
   | Some(x) => f(x)
   };
 
-let map = (f: 'a => 'b, v: t('a)) : t('b) =>
-  switch v {
-  | None => None
-  | Some(x) => Some(f(x))
-  };
+module Functor = {
+  let map = (f: 'a => 'b, v: t('a)) : t('b) =>
+    switch v {
+    | None => None
+    | Some(x) => Some(f(x))
+    };
+};
 
-let bind = (m, f) =>
-  switch m {
-  | None => None
-  | Some(x) => f(x)
-  };
+include Functor;
 
-let (>>=) = bind;
+module Applicative = {
+  let pure = some;
+  let apply = (v: t(('a => 'a))) : ('a => 'a) =>
+    switch v {
+    | None => ((x) => x)
+    | Some(f) => f
+    };
+};
 
-let apply = (v: t(('a => 'a))) : ('a => 'a) =>
-  switch v {
-  | None => ((x) => x)
-  | Some(f) => f
-  };
+include Applicative;
+
+module Monad = {
+  let pure = some;
+  let bind = (m, f) =>
+    switch m {
+    | None => None
+    | Some(x) => f(x)
+    };
+  let (>>=) = bind;
+};
+
+include Monad;
 
 let filter = (f: 'a => bool, v: t('a)) : t('a) =>
   switch v {
