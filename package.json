@@ -1,0 +1,19 @@
+{
+  "name": "reason-commons",
+  "version": "0.1.0",
+  "scripts": {
+    "clean": "bsb -clean-world",
+    "build": "bsb -make-world",
+    "watch": "bsb -make-world -w",
+    "test": "jest --watchAll"
+  },
+  "keywords": [
+    "BuckleScript",
+    "reason"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "bs-jest": "^0.2.0",
+    "bs-platform": "2.0.0"
+  }
+}
