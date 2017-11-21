@@ -31,3 +31,11 @@ let toOption: t('a, _) => option('a);
 let bind: (t('a, 'b), 'a => t('c, 'b)) => t('c, 'b);
 
 let (>>=): (t('a, 'b), 'a => t('c, 'b)) => t('c, 'b);
+
+module Functor: {let map: ('a => 'b, t('a, 'c)) => t('b, 'c);};
+
+module Monad: {
+  let pure: 'a => t('a, 'c);
+  let bind: (t('a, 'c), 'a => t('b, 'c)) => t('b, 'c);
+  let (>>=): (t('a, 'c), 'a => t('b, 'c)) => t('b, 'c);
+};

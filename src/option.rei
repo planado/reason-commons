@@ -31,3 +31,12 @@ let get: t('a) => 'a;
 let getExn: (t('a), exn) => 'a;
 
 let both: (t('a), t('b)) => t(('a, 'b));
+
+module Functor: {let map: ('a => 'b, t('a)) => t('b);};
+
+
+module Monad: {
+  let pure: 'a => t('a);
+  let bind: (t('a), 'a => t('b)) => t('b);
+  let (>>=): (t('a), 'a => t('b)) => t('b);
+};
