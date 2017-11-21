@@ -18,23 +18,12 @@ module Functor = {
 
 include Functor;
 
-module Applicative = {
-  let pure = some;
-  let apply = (v: t(('a => 'a))) : ('a => 'a) =>
-    switch v {
-    | None => ((x) => x)
-    | Some(f) => f
-    };
-};
-
-include Applicative;
-
 module Monad = {
   let pure = some;
-  let bind = (m, f) =>
-    switch m {
-    | None => None
+  let bind = (v: t('a), f: 'a => t('b)) : t('b) =>
+    switch v {
     | Some(x) => f(x)
+    | None => None
     };
   let (>>=) = bind;
 };

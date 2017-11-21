@@ -39,3 +39,11 @@ let fromJs: Js.Promise.t('a) => t('a, 'x);
 let make: (('a => unit, 'x => unit) => unit) => t('a, 'x);
 
 let race: array(t('a, 'x)) => t('a, 'x);
+
+module Functor: {let map: ('a => 'b, t('a, 'c)) => t('b, 'c);};
+
+module Monad: {
+  let pure: 'a => t('a, 'c);
+  let bind: (t('a, 'c), 'a => t('b, 'c)) => t('b, 'c);
+  let (>>=): (t('a, 'c), 'a => t('b, 'c)) => t('b, 'c);
+};

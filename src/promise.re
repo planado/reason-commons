@@ -31,6 +31,7 @@ module Functor = {
 include Functor;
 
 module Monad = {
+  let pure = (x) => resolve(x);
   let bind = (p: t('a, 'x), f: 'a => t('b, 'x)) : t('b, 'x) => _bind(p, f);
   let (>>=) = _bind;
 };
