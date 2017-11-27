@@ -5,7 +5,8 @@
     "clean": "bsb -clean-world",
     "build": "bsb -make-world",
     "watch": "bsb -make-world -w",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "prepush": "yarn check --integrity"
   },
   "keywords": [
     "BuckleScript",
@@ -13,9 +14,11 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "bs-jest": "^0.2.0"
+    "bs-jest": "^0.2.0",
+    "husky": "^0.14.3"
   },
   "peerDependencies": {
-    "bs-platform": "^2.0.0"
-  }
+    "bs-platform": "^2.1.0"
+  },
+  "dependencies": {}
 }
