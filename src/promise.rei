@@ -47,3 +47,6 @@ module Monad: {
   let bind: (t('a, 'c), 'a => t('b, 'c)) => t('b, 'c);
   let (>>=): (t('a, 'c), 'a => t('b, 'c)) => t('b, 'c);
 };
+
+/* Acts similar to fold but joins nested promises */
+let bibind: (t('a, 'x), 'a => t('b, 'x), 'x => t('b, 'x)) => t('b, 'x);
