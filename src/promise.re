@@ -24,7 +24,7 @@ type t('a, 'err);
 
 [@bs.send] external _fromjs : (Js.Promise.t('a), 'a => 'a) => t('a, 'x) = "then";
 
-[@bs.send] [@bs.scope "Promise"]
+[@bs.send]
 external bibind : (t('a, 'x), 'a => t('b, 'x), 'x => t('b, 'x)) => t('b, 'x) =
   "then";
 
