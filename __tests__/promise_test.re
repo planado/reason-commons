@@ -67,3 +67,11 @@ describe(
     )
   }
 );
+
+testAsync(
+  "catch should return resolved promise",
+  (done_) =>
+    Promise.(
+      reject(5) |> catch((x) => x + 10) |> finally((x) => done_(expect(x) |> toBe(15)), ignore)
+    )
+);

@@ -32,8 +32,13 @@ let getExn: (t('a), exn) => 'a;
 
 let both: (t('a), t('b)) => t(('a, 'b));
 
-module Functor: {let map: ('a => 'b, t('a)) => t('b);};
+let ofResult: Result.t('a, 'b) => t('a);
 
+let ofNativeOption: option('a) => t('a);
+
+let toNativeOption: t('a) => option('a);
+
+module Functor: {let map: ('a => 'b, t('a)) => t('b);};
 
 module Monad: {
   let pure: 'a => t('a);

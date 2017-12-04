@@ -40,7 +40,7 @@ module Functor = {
 include Functor;
 
 module Monad = {
-  let pure = x => Ok(x);
+  let pure = (x) => Ok(x);
   let bind = (v: t('a, 'c), f: 'a => t('b, 'c)) : t('b, 'c) =>
     switch v {
     | Ok(x) => f(x)

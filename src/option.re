@@ -70,6 +70,24 @@ let both = (v1: t('a), v2: t('b)) : t('c) =>
   | (Some(a), Some(b)) => Some((a, b))
   };
 
+let ofResult = (v: Result.t('a, 'b)) : t('a) =>
+  switch v {
+  | Ok(x) => Some(x)
+  | Error(_) => None
+  };
+
+let ofNativeOption = (v: option('a)) : t('a) =>
+  switch v {
+  | Some(x) => Some(x)
+  | None => None
+  };
+
+let toNativeOption = (v: t('a)) : option('a) =>
+  switch v {
+  | Some(x) => Some(x)
+  | None => None
+  };
+
 module Functor = {
   let map = (f: 'a => 'b, v: t('a)) : t('b) =>
     switch v {
@@ -91,4 +109,3 @@ module Monad = {
 };
 
 include Monad;
-
